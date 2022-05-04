@@ -1,0 +1,45 @@
+.node { 
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    color: #61dafb;
+    background: #000
+  }
+  
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  li {
+    float: left;
+  }
+  
+  li div {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    margin-left:30px;
+    color: #fff;
+    text-align: center;
+    color: #61dafb;
+    background: #000
+  }
+  
+  .visited {
+    background: #D2E526;
+    border: 1px solid black;
+  }
+
+  .found {
+    background: #38ca35;
+    border: 1px solid black;
+  }
