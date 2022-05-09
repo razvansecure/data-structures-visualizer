@@ -9,6 +9,7 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -23,6 +24,10 @@ import Xarrow from "react-xarrows";
 import { useRef, useState } from 'react';
 import LinkedList from "./LinkedList"
 import { Nightlife } from '@mui/icons-material';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import LeaderLine from 'leader-line-new';
+import LinkedListItem from './LinkedListItem';
 
 function Copyright(props: any) {
   return (
@@ -44,6 +49,13 @@ interface Node {
   value: number,
   next: number,
   cssClass: string
+}
+
+
+interface LinkedListNode {
+  id: number,
+  value: number,
+  next: LinkedListNode
 }
 
 interface AppBarProps extends MuiAppBarProps {
@@ -105,15 +117,29 @@ function DashboardContent() {
   const [linkedList, setlinkedList] = useState<Node[]>([])
   const addRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const deleteRef = useRef<HTMLInputElement>(null);
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
-  let linkedListHead : Node;
   const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
+  const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
+  const [linkedListHead, setLinkedListHead] = React.useState<LinkedListNode | null>(null)
 
 function clearNodes(){
   for(let i=0; i<linkedList.length; i++){
     var div = document.getElementById(linkedList[i].id.toString())
     div?.setAttribute('class','')
   }
+}
+
+function disableButtons(){
+  setDisabledFlagAdd(true)
+  setDisabledFlagSearch(true)
+  setDisabledFlagDelete(true)
+}
+
+function enableButtons(){
+  setDisabledFlagSearch(false)
+  setDisabledFlagAdd(false)
+  setDisabledFlagDelete(false)
 }
 
 function addNode(value: number){
@@ -131,8 +157,7 @@ function addNode(value: number){
 }
 
 async function searchNode(value: number){
-    setDisabledFlagAdd(true)
-    setDisabledFlagSearch(true)
+    disableButtons()
     setErrorMessage("")
     clearNodes()
     for(let i=0; i<linkedList.length; i++){
@@ -145,8 +170,42 @@ async function searchNode(value: number){
       div?.setAttribute('class','visited')
       await new Promise(r => setTimeout(r, 1000));
     }
-    setDisabledFlagSearch(false)
-    setDisabledFlagAdd(false)
+   enableButtons()
+}
+
+async function deleteNode(value: number){
+  disableButtons()
+  setErrorMessage("")
+  clearNodes()
+  let i=0;
+  let deletedId = -1;
+  for(i=0; i<linkedList.length; i++){
+    var div = document.getElementById(linkedList[i].id.toString())
+    let currentValue = linkedList[i].value
+    if(currentValue === value){
+        div?.setAttribute('class','found')
+        deletedId = linkedList[i].id
+        await new Promise(r => setTimeout(r, 1000));
+        break
+      }
+    div?.setAttribute('class','visited')
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  let newlist = [...linkedList]
+  if(i < linkedList.length){
+    if(i > 0){
+      if(i+1 < linkedList.length)
+        newlist[i-1].next = newlist[i+1].id
+      else
+        newlist[i-1].next = -1
+    }
+    //setlinkedList([...newlist])
+    await new Promise(r => setTimeout(r, 1000));
+    newlist = newlist.filter(item => item.id !== deletedId)
+    clearNodes()
+    setlinkedList([...newlist])
+  }
+  enableButtons()
 }
 
 function handleAddNode(){
@@ -157,6 +216,7 @@ function handleAddNode(){
       if(addRef.current != null)
         addRef.current.value !== '' && addRef.current.value !== null && Number.isInteger(Number(addRef.current.value)) ? 
           addNode(parseInt(addRef.current.value)) : setErrorMessage("You can only add integers!")
+
 }
 
   return (
@@ -206,9 +266,9 @@ function handleAddNode(){
               px: [1],
             }}
           >
-            <IconButton onClick={toggleDrawer}>
+            {/* <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
-            </IconButton>
+            </IconButton> */}
           </Toolbar>
           <Divider />
           <List component="nav">
@@ -226,14 +286,14 @@ function handleAddNode(){
                 : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
-            overflow: 'auto',
+            overflow: 'scroll',
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="lg" sx={{ mt: 8, mb: 8 }}>
             <Grid container spacing={3}>
               
-              <Grid item xs={12} md={8} lg={9}>
+              <Grid item xs={15} md={8} lg={20}>
                 {/* <Paper
                   sx={{
                     p: 2,
@@ -252,15 +312,23 @@ function handleAddNode(){
                 <button onClick={() => addNode(parseInt(addRef.current.value))}>add node</button>
                 <Xarrow start='1' end='2'/>
                 </div> */}
-                <input type="text" ref={addRef}></input>
-                <button disabled={disabledFlagAdd} onClick={handleAddNode}>add node</button>
-                <div className="error"> {errorMessage} </div>
-                <LinkedList linkedList = {linkedList} ></LinkedList>
-                <input type="text" ref={searchRef}></input>
-                <button disabled={disabledFlagSearch} onClick={() => {
+                <Stack spacing={2} direction="row">
+                <TextField type="number" inputRef={addRef}></TextField>
+                <Button variant="contained" disabled={disabledFlagAdd} onClick={handleAddNode}>add node</Button>
+                
+                <TextField type="number" inputRef={searchRef}></TextField>
+                <Button variant="contained" disabled={disabledFlagSearch} onClick={() => {
                   if(searchRef.current != null)
                     searchNode(parseInt(searchRef.current.value))}
-                }>search node</button>
+                }>search node</Button>
+                <TextField type="number" inputRef={deleteRef}></TextField>
+                <Button variant="contained" disabled={disabledFlagDelete} onClick={() => {
+                  if(deleteRef.current != null)
+                    deleteNode(parseInt(deleteRef.current.value))}
+                }>delete node</Button>
+                </Stack>
+                <LinkedList linkedList = {linkedList} ></LinkedList>
+                <div className="error"> {errorMessage} </div>
               </Grid>
               {/* <Grid item xs={12} md={4} lg={3}>
                 <Paper

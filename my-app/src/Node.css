@@ -19,15 +19,16 @@
   
   li {
     float: left;
+    margin-top: 100px;
   }
   
   li div {
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
     border-radius: 50%;
     font-size: 20px;
-    margin-left:30px;
+    margin-left:50px;
     color: #fff;
     text-align: center;
     color: #61dafb;
@@ -42,4 +43,8 @@
   .found {
     background: #38ca35;
     border: 1px solid black;
+  }
+
+  .arrow{
+    position:relative;
   }

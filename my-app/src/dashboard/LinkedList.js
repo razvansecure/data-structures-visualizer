@@ -4,8 +4,8 @@ export default function TodoList({linkedList}){
     return(
         <ul id='linkedlist'>
         {
-        linkedList.map((node)=>{
-            return <LinkedListItem key={node.id} node = {node}/>
+        linkedList.map((node, index)=>{
+            return <LinkedListItem key={index} node = {node}/>
         }
         )
         }     
