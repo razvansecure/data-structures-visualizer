@@ -1,11 +1,11 @@
-import LinkedListItem from "./LinkedListItem"
-
+import StackListItem from "./StackListItem"
 export default function TodoList({linkedList}){
+
     return(
         <ul id='linkedlist'>
         {
         linkedList.map((node, index)=>{
-            return <LinkedListItem key={index} node = {node} size = {linkedList.length}/>
+            return <StackListItem key={index} node = {node} size = {linkedList.length}/>
         }
         )
         }     

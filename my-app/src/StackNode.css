@@ -18,14 +18,10 @@
   }
   
   li {
-    float: left;
+    float: right;
     margin-top: 100px;
   }
-
-  .stack{
-    float: right;
-  }
-
+  
   li div {
     width: 60px;
     height: 60px;
@@ -62,14 +58,4 @@
   .arrow{
     position:relative;
     width: 100px;
-  }
-
-  .codeSection{
-    /* position:absolute; */
-    bottom:0;
-    width:100%;
-    background-color: lightgray;
-    text-align: center;
-    height:60px;
-    /* margin-left: 500px; */
   }

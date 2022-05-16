@@ -101,7 +101,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function QueueContent() {
   const [open, setOpen] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState("");
   const toggleDrawer = () => {
@@ -151,198 +151,24 @@ function addNode(value: number){
 
 const abortController = new AbortController();
 
-function parseNodes(listIndex: number, value: number){
-  if(listIndex < linkedList.length){
-    let div = document.getElementById(linkedList[listIndex].id.toString())
-    if(linkedList[listIndex].value === value){
-      div?.setAttribute('class','visited')
-      div?.addEventListener('animationend',()=>{
-        div?.setAttribute('class','found')
-
-        abortController.abort()
-        enableButtons()
-        setErrorMessage("Element " + value + " has been found in the list at index " + listIndex)
-      },{ signal: abortController.signal })
-
-      return;
-    }
-    div?.addEventListener('animationend',()=>{
-      parseNodes(listIndex + 1, value)
-    },{ signal: abortController.signal })
-    div?.setAttribute('class','visited')
+async function deleteNode(){
+  if(linkedList.length === 0){
+    setErrorMessage("Queue is empty!")
+    return
   }
-  else{
-    abortController.abort()
-    enableButtons()
-    setErrorMessage("Element " + value + " has not been found in the list")
-  }
-}
-
-interface passIndex{
-  index: number
-}
-
-function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: passIndex){
-  if(listIndex < linkedList.length){
-    let div = document.getElementById(linkedList[listIndex].id.toString())
-    if(linkedList[listIndex].value === value){
-      deletedIndex.index = listIndex
-      div?.setAttribute('class','visited')
-      div?.addEventListener('animationend',()=>{
-        div?.setAttribute('class','found')
-        let newlist = [...linkedList]
-        if(listIndex > 0){
-          if(listIndex+1 < linkedList.length){
-            newlist[listIndex-1].next = newlist[listIndex+1].id
-          }
-          else{
-            newlist[listIndex-1].next = -1
-          }
-        }
-        newlist[listIndex].next = -1
-        setlinkedList(newlist)
-        abortController.abort()
-      },{ signal: abortController.signal })
-    }
-    div?.addEventListener('animationend',()=>{
-      parseNodesAndDelete(listIndex + 1, value, deletedIndex)
-    },{ signal: abortController.signal })
-    div?.setAttribute('class','visited')
-  }
-  else{
-    abortController.abort()
-    deletedIndex.index = -1
-  }
-}
-
-// function parseNodesAndDelete(listIndex: number, value: number){
-//   if(listIndex < linkedList.length){
-//     let div = document.getElementById(linkedList[listIndex].id.toString())
-//     if(div !== null){
-//     if(linkedList[listIndex].value === value){
-//       let deletedId = linkedList[listIndex].id
-//       //div?.setAttribute('class','visited')
-//       div.addEventListener('animationend',()=>{
-//         //div?.setAttribute('class','found')
-//         div?.classList.remove("visited")
-//         div?.classList.add("found")
-//         if(div !== null){
-//         let newlist = [...linkedList]
-//         if(listIndex > 0){
-//           if(listIndex+1 < linkedList.length)
-//             newlist[listIndex-1].next = newlist[listIndex+1].id
-//           else
-//             newlist[listIndex-1].next = -1
-//         }
-//         newlist = newlist.filter(item => item.id !== deletedId)
-//         setlinkedList([...newlist])
-//         // newlist.forEach((item) => {
-//         //   let div = document.getElementById(item.id.toString())
-//         //   console.log(div?.id)
-//         //   div?.setAttribute('class','')
-//         //   console.log(div?.className)
-//         // })
-//         abortController.abort()
-//         enableButtons()
-//       }},{ signal: abortController.signal })
-//       div.classList.add("visited")
-//       return;
-//     }
-//     div.addEventListener('animationend',()=>{
-//       parseNodesAndDelete(listIndex + 1, value)
-//     },{ signal: abortController.signal })
-//     //div.className = "visited"
-//     div.classList.add("visited")
-//   }
-//   }
-//   else{
-//     abortController.abort()
-//     enableButtons()
-//   }
-// }
-
-async function searchNode(value: number){
-    disableButtons()
-    setErrorMessage("")
-    await Promise.resolve(clearNodes())
-    parseNodes(0,value)
-}
-
-async function deleteNode(value: number){
-  console.log(linkedList)
   disableButtons()
   setErrorMessage("")
   await Promise.resolve(clearNodes())
-  let deletedIndex = {index: -1}
-  parseNodesAndDelete(0, value, deletedIndex)
-  abortController.signal.onabort = () => setTimeout(() => {
-      let newlist = [...linkedList]
-      let listIndex = deletedIndex.index
-      // console.log(listIndex)
-      // if(listIndex > 0){
-      //   if(listIndex+1 < linkedList.length)
-      //     newlist[listIndex-1].next = newlist[listIndex+1].id
-      //   else
-      //     newlist[listIndex-1].next = -1
-      // }
-      if(listIndex > -1){
-        newlist = newlist.filter(item => item.id !== linkedList[listIndex].id)
-        console.log(newlist)
-        setlinkedList([...newlist])
-        setErrorMessage("Element " + value + " has been successfully deleted from the list")
-      }
-      else{
-        setErrorMessage("Element " + value + " has not been found in the list")
-      }
-      // setlinkedList([...newlist])
-      // if(listIndex > 0 && listIndex < newlist.length)
-      //   newlist[listIndex-1].next = newlist[listIndex].id
-      //setlinkedList([...linkedList.slice(0, listIndex), ...linkedList.slice(listIndex + 1)])
-      clearNodes()
-      enableButtons()
-  },2000)
-  //await new Promise(r => setTimeout(r, 1000))
-  // let newlist = [...linkedList]
-  // let listIndex = deletedIndex.index
-  // console.log(listIndex)
-  // if(listIndex > 0){
-  //   if(listIndex+1 < linkedList.length)
-  //     newlist[listIndex-1].next = newlist[listIndex+1].id
-  //   else
-  //     newlist[listIndex-1].next = -1
-  // }
-  // newlist = newlist.filter(item => item.id !== linkedList[listIndex].id)
-  // setlinkedList([...newlist])
-  
-  // let i=0;
-  // let deletedId = -1;
-  // for(i=0; i<linkedList.length; i++){
-  //   var div = document.getElementById(linkedList[i].id.toString())
-  //   let currentValue = linkedList[i].value
-  //   if(currentValue === value){
-  //       div?.setAttribute('class','found')
-  //       deletedId = linkedList[i].id
-  //       await new Promise(r => setTimeout(r, 1000));
-  //       break
-  //     }
-  //   div?.setAttribute('class','visited')
-  //   await new Promise(r => setTimeout(r, 1000));
-  // }
-  // let newlist = [...linkedList]
-  // if(i < linkedList.length){
-  //   if(i > 0){
-  //     if(i+1 < linkedList.length)
-  //       newlist[i-1].next = newlist[i+1].id
-  //     else
-  //       newlist[i-1].next = -1
-  //   }
-  //   //setlinkedList([...newlist])
-  //   //await new Promise(r => setTimeout(r, 1000));
-  //   newlist = newlist.filter(item => item.id !== deletedId)
-  //   //clearNodes()
-  //   setlinkedList([...newlist])
-  // }
-  // enableButtons()
+  let div = document.getElementById(linkedList[0].id.toString())
+  div?.setAttribute('class','found')
+  setTimeout(() => {
+    let newlist = [...linkedList]
+    newlist[0].next = -1
+    newlist.splice(0,1)
+    setlinkedList(newlist)
+    enableButtons()
+    clearNodes()
+  }, 2000);
 }
 
 function handleAddNode(){
@@ -385,7 +211,7 @@ function handleAddNode(){
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Linked List
+               Queue
             </Typography>
             {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -451,27 +277,15 @@ function handleAddNode(){
                 </div> */}
                 <Stack spacing={2} direction="row">
                 <TextField type="number" inputRef={addRef}></TextField>
-                <Button variant="contained" disabled={disabledFlagAdd} onClick={handleAddNode}>add node</Button>
+                <Button variant="contained" disabled={disabledFlagAdd} onClick={handleAddNode}>push node</Button>
                 
-                <TextField type="number" inputRef={searchRef}></TextField>
-                <Button variant="contained" disabled={disabledFlagSearch} onClick={() => {
-                  if(searchRef.current != null)
-                    searchRef.current.value !== '' && searchRef.current.value !== null && Number.isInteger(Number(searchRef.current.value)) ? 
-                      searchNode(parseInt(searchRef.current.value)) : setErrorMessage("You can only search integers!")
-                }
-                }>search node</Button>
-                <TextField type="number" inputRef={deleteRef}></TextField>
-                <Button variant="contained" disabled={disabledFlagDelete} onClick={() => {
-                  if(deleteRef.current != null)
-                    deleteRef.current.value !== '' && deleteRef.current.value !== null && Number.isInteger(Number(deleteRef.current.value)) ? 
-                      deleteNode(parseInt(deleteRef.current.value)) : setErrorMessage("You can only delete integers!")}
-                }>delete node</Button>
+                <Button variant="contained" disabled={disabledFlagDelete} onClick={deleteNode}>pop node</Button>
                 </Stack>
                 <LinkedList linkedList = {linkedList} ></LinkedList>
                 <div className="error"> {errorMessage} </div>
               </Grid>
-              <Grid item xs={12} md={4} lg={300}>
-                {/* <Paper
+              {/* <Grid item xs={12} md={4} lg={3}>
+                <Paper
                   sx={{
                     p: 2,
                     display: 'flex',
@@ -480,10 +294,8 @@ function handleAddNode(){
                   }}
                 >
                   <Deposits />
-                </Paper> */}
-                
-              </Grid>
-              <div className='codeSection'>aslkfsqlajfkla</div>
+                </Paper>
+              </Grid> */}
               {/* Recent Orders */}
               {/* <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
@@ -498,6 +310,6 @@ function handleAddNode(){
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
+export default function Queue() {
+  return <QueueContent />;
 }

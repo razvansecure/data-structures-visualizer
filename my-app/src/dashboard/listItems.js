@@ -13,26 +13,30 @@ import {Link} from 'react-router-dom';
 
 export const mainListItems = (
   <React.Fragment>
-    <Link to="/linkedlist" style={{ textDecoration: 'none' }}>
+    <Link to='/linkedlist' style={{ textDecoration: 'none' }}>
     <ListItemButton>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="Linked list" />
+      <ListItemText primary="Linked list js" />
     </ListItemButton>
     </Link>
+    <Link to='/queue' style={{ textDecoration: 'none' }}>
     <ListItemButton>
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Orders" />
+      <ListItemText primary="Queue" />
     </ListItemButton>
+    </Link>
+    <Link to='/stack' style={{ textDecoration: 'none' }}>
     <ListItemButton>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary="Customers" />
+      <ListItemText primary="Stack" />
     </ListItemButton>
+    </Link>
     <ListItemButton>
       <ListItemIcon>
         <BarChartIcon />
