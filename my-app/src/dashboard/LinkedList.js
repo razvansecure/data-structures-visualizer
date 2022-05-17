@@ -1,6 +1,6 @@
 import LinkedListItem from "./LinkedListItem"
 
-export default function TodoList({linkedList}){
+export default function LinkedList({linkedList}){
     return(
         <ul id='linkedlist'>
         {

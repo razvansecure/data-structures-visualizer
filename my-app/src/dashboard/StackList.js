@@ -1,5 +1,5 @@
 import StackListItem from "./StackListItem"
-export default function TodoList({linkedList}){
+export default function StackList({linkedList}){
 
     return(
         <ul id='linkedlist'>

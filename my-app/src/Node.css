@@ -10,23 +10,36 @@
     background: #000
   }
   
-  ul {
+  #linkedlist {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
   }
   
-  li {
+  #codeSection{
+    /* position:absolute; */
+    list-style-type: none;
+    margin: 0 auto;
+    bottom:0;
+    display: inline-block;
+    width:30%;
+    background-color: lightgray;
+    text-align: left;
+    /* text-align: center; */
+    /* margin-left: 500px; */
+  }
+  
+li {
     float: left;
     margin-top: 100px;
   }
 
-  .stack{
+.stack{
     float: right;
   }
 
-  li div {
+li div {
     width: 60px;
     height: 60px;
     line-height: 60px;
@@ -36,9 +49,7 @@
     color: #fff;
     text-align: center;
     /* color: #61dafb; */
-    background: #000
-
-   
+    background: #000   
   }
 
   @keyframes makeItfadeIn {
@@ -62,14 +73,4 @@
   .arrow{
     position:relative;
     width: 100px;
-  }
-
-  .codeSection{
-    /* position:absolute; */
-    bottom:0;
-    width:100%;
-    background-color: lightgray;
-    text-align: center;
-    height:60px;
-    /* margin-left: 500px; */
   }

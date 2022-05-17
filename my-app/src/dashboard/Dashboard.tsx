@@ -28,6 +28,9 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import LeaderLine from 'leader-line-new';
 import LinkedListItem from './LinkedListItem';
+import CodeSectionList from './CodeSectionList';
+import linkedListAddCodeText from './codeText/linkedListAdd';
+import linkedListSearchCodeText from './codeText/linkedListSearch';
 
 function Copyright(props: any) {
   return (
@@ -49,6 +52,11 @@ interface Node {
   value: number,
   next: number,
   cssClass: string
+}
+
+interface CodeLine{
+  id: string,
+  code: string
 }
 
 interface AppBarProps extends MuiAppBarProps {
@@ -108,12 +116,33 @@ function DashboardContent() {
     setOpen(!open);
   };
   const [linkedList, setlinkedList] = useState<Node[]>([])
+  const [codeLineList, setcodeLineList] = useState<CodeLine[]>([])
   const addRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const deleteRef = useRef<HTMLInputElement>(null);
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
   const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
+  const [showCodeAdd, setshowCodeAdd] = useState<CodeLine[]>([])
+  const [showCodeSearch, setshowCodeSearch] = useState<CodeLine[]>([])
+
+  React.useEffect(() => {
+    let newCodeLineList : CodeLine[] = []
+    let index = 0
+    linkedListAddCodeText.split("\n").forEach((lineOfCode) => {
+        index++
+        newCodeLineList = [...newCodeLineList,{id: "code" + index,code: lineOfCode}]
+    })
+    setshowCodeAdd([...newCodeLineList])
+
+    let newCodeLineListSearch : CodeLine[] = []
+    index = 0
+    linkedListSearchCodeText.split("\n").forEach((lineOfCode) => {
+        index++
+        newCodeLineListSearch = [...newCodeLineListSearch,{id: "code" + index,code: lineOfCode}]
+    })
+    setshowCodeSearch([...newCodeLineListSearch])
+  },[])
 
 function clearNodes(){
   for(let i=0; i<linkedList.length; i++){
@@ -138,6 +167,8 @@ function enableButtons(){
 function addNode(value: number){
     setErrorMessage("")
     clearNodes()
+    
+    setcodeLineList(showCodeAdd)
     let newlist = [...linkedList]
     if(newlist.length === 0){
       setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
@@ -264,6 +295,7 @@ function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: pas
 async function searchNode(value: number){
     disableButtons()
     setErrorMessage("")
+    setcodeLineList(showCodeSearch)
     await Promise.resolve(clearNodes())
     parseNodes(0,value)
 }
@@ -483,7 +515,7 @@ function handleAddNode(){
                 </Paper> */}
                 
               </Grid>
-              <div className='codeSection'>aslkfsqlajfkla</div>
+              <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
               {/* Recent Orders */}
               {/* <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
