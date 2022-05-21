@@ -4,8 +4,8 @@ export default function CodeSectionList({lineCodeArray}){
     return(
         <ul id='codeSection'>
         {
-        lineCodeArray.map((line, index)=>{
-            return <CodeSectionListItem key={index} line = {line}/>
+        lineCodeArray.map((line)=>{
+            return <CodeSectionListItem key={line.id} line = {line}/>
         }
         )
         }     

@@ -31,6 +31,7 @@ import LinkedListItem from './LinkedListItem';
 import CodeSectionList from './CodeSectionList';
 import linkedListAddCodeText from './codeText/linkedListAdd';
 import linkedListSearchCodeText from './codeText/linkedListSearch';
+import linkedListDeleteCodeText from './codeText/linkedListDelete';
 
 function Copyright(props: any) {
   return (
@@ -123,32 +124,49 @@ function DashboardContent() {
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
   const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
-  const [showCodeAdd, setshowCodeAdd] = useState<CodeLine[]>([])
-  const [showCodeSearch, setshowCodeSearch] = useState<CodeLine[]>([])
+  let showCodeAdd : CodeLine[];
+  let showCodeSearch : CodeLine[];
+  let showCodeDelete : CodeLine[];
+   /// load code from file for each operation
+  loadAddCode()
+  loadSearchCode()
+  loadDeleteCode()
 
-  React.useEffect(() => {
+  function loadAddCode(){
     let newCodeLineList : CodeLine[] = []
     let index = 0
     linkedListAddCodeText.split("\n").forEach((lineOfCode) => {
-        index++
-        newCodeLineList = [...newCodeLineList,{id: "code" + index,code: lineOfCode}]
-    })
-    setshowCodeAdd([...newCodeLineList])
+          index++
+          newCodeLineList = [...newCodeLineList,{id: "code_add" + index,code: lineOfCode}]
+      })
+    showCodeAdd = newCodeLineList
+  }
 
+  function loadSearchCode(){
     let newCodeLineListSearch : CodeLine[] = []
-    index = 0
+    let index = 0
     linkedListSearchCodeText.split("\n").forEach((lineOfCode) => {
         index++
-        newCodeLineListSearch = [...newCodeLineListSearch,{id: "code" + index,code: lineOfCode}]
+        newCodeLineListSearch = [...newCodeLineListSearch,{id: "code_search" + index,code: lineOfCode}]
     })
-    setshowCodeSearch([...newCodeLineListSearch])
-  },[])
+    showCodeSearch = newCodeLineListSearch
+  }
+
+  function loadDeleteCode(){
+    let newCodeLineListDelete : CodeLine[] = []
+    let index = 0
+    linkedListDeleteCodeText.split("\n").forEach((lineOfCode) => {
+        index++
+        newCodeLineListDelete = [...newCodeLineListDelete,{id: "code_delete" + index,code: lineOfCode}]
+    })
+    showCodeDelete = newCodeLineListDelete
+  }
 
 function clearNodes(){
   for(let i=0; i<linkedList.length; i++){
     var div = document.getElementById(linkedList[i].id.toString())
     if(div != null)
-      div.className = ""
+      div.className = "node"
   }
 }
 
@@ -167,8 +185,9 @@ function enableButtons(){
 function addNode(value: number){
     setErrorMessage("")
     clearNodes()
-    
-    setcodeLineList(showCodeAdd)
+    setcodeLineList([...showCodeAdd])
+    console.log(showCodeAdd)
+    console.log(showCodeSearch)
     let newlist = [...linkedList]
     if(newlist.length === 0){
       setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
@@ -243,6 +262,7 @@ function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: pas
   else{
     abortController.abort()
     deletedIndex.index = -1
+    setErrorMessage("Element " + value + " has not been found in the list")
   }
 }
 
@@ -295,19 +315,25 @@ function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: pas
 async function searchNode(value: number){
     disableButtons()
     setErrorMessage("")
-    setcodeLineList(showCodeSearch)
+    setcodeLineList([...showCodeSearch])
     await Promise.resolve(clearNodes())
     parseNodes(0,value)
 }
 
 async function deleteNode(value: number){
-  console.log(linkedList)
+  setcodeLineList([...showCodeDelete])
+  if(linkedList.length === 0)
+  {
+    setErrorMessage("The list is empty!")
+    return;
+  }
   disableButtons()
   setErrorMessage("")
   await Promise.resolve(clearNodes())
   let deletedIndex = {index: -1}
   parseNodesAndDelete(0, value, deletedIndex)
   abortController.signal.onabort = () => setTimeout(() => {
+    console.log("abort")
       let newlist = [...linkedList]
       let listIndex = deletedIndex.index
       // console.log(listIndex)
@@ -322,9 +348,6 @@ async function deleteNode(value: number){
         console.log(newlist)
         setlinkedList([...newlist])
         setErrorMessage("Element " + value + " has been successfully deleted from the list")
-      }
-      else{
-        setErrorMessage("Element " + value + " has not been found in the list")
       }
       // setlinkedList([...newlist])
       // if(listIndex > 0 && listIndex < newlist.length)

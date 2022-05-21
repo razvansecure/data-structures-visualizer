@@ -28,6 +28,9 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import LeaderLine from 'leader-line-new';
 import LinkedListItem from './LinkedListItem';
+import CodeSectionList from './CodeSectionList';
+import stackPushCodeText from './codeText/stackPush'
+import stackPopCodeText from './codeText/stackPop'
 
 function Copyright(props: any) {
   return (
@@ -49,6 +52,11 @@ interface Node {
   value: number,
   next: number,
   cssClass: string
+}
+
+interface CodeLine{
+  id: string,
+  code: string
 }
 
 interface AppBarProps extends MuiAppBarProps {
@@ -108,29 +116,52 @@ function LinkedListStackContent() {
     setOpen(!open);
   };
   const [linkedList, setlinkedList] = useState<Node[]>([])
+  const [codeLineList, setcodeLineList] = useState<CodeLine[]>([])
   const addRef = useRef<HTMLInputElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const deleteRef = useRef<HTMLInputElement>(null);
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
-  const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
+
+  let showCodePush : CodeLine[];
+  let showCodePop : CodeLine[];
+
+   /// load code from file for each operation
+  loadPushCode()
+  loadPopCode()
+
+  function loadPushCode(){
+    let newCodeLineList : CodeLine[] = []
+    let index = 0
+    stackPushCodeText.split("\n").forEach((lineOfCode) => {
+          index++
+          newCodeLineList = [...newCodeLineList,{id: "code_add" + index,code: lineOfCode}]
+      })
+    showCodePush = newCodeLineList
+  }
+
+  function loadPopCode(){
+    let newCodeLineListDelete : CodeLine[] = []
+    let index = 0
+    stackPopCodeText.split("\n").forEach((lineOfCode) => {
+        index++
+        newCodeLineListDelete = [...newCodeLineListDelete,{id: "code_delete" + index,code: lineOfCode}]
+    })
+    showCodePop = newCodeLineListDelete
+  }
 
 function clearNodes(){
   for(let i=0; i<linkedList.length; i++){
     var div = document.getElementById(linkedList[i].id.toString())
     if(div != null)
-      div.className = ""
+      div.className = "node"
   }
 }
 
 function disableButtons(){
   setDisabledFlagAdd(true)
-  setDisabledFlagSearch(true)
   setDisabledFlagDelete(true)
 }
 
 function enableButtons(){
-  setDisabledFlagSearch(false)
   setDisabledFlagAdd(false)
   setDisabledFlagDelete(false)
 }
@@ -138,15 +169,20 @@ function enableButtons(){
 function addNode(value: number){
     setErrorMessage("")
     clearNodes()
+    setcodeLineList([...showCodePush])
     let newlist = [...linkedList]
     if(newlist.length === 0){
       setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
       return
     }
-    const lastNode = newlist[newlist.length-1]
-    lastNode.next = lastNode.id+1
+    // const lastNode = newlist[newlist.length-1]
+    // lastNode.next = lastNode.id+1
 
-    setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1, cssClass: ""}])
+    // setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1, cssClass: ""}])
+
+    const firstNode = newlist[0]
+
+    setlinkedList([{id: firstNode.id+1, value: value, next: firstNode.id, cssClass: ""},...newlist])
 }
 
 const abortController = new AbortController();
@@ -156,21 +192,22 @@ interface passIndex{
 }
 
 async function deleteNode(){
+  setcodeLineList([...showCodePop])
   if(linkedList.length === 0){
-    setErrorMessage("Queue is empty!")
+    setErrorMessage("Stack is empty!")
     return
   }
   disableButtons()
   setErrorMessage("")
   await Promise.resolve(clearNodes())
-  let div = document.getElementById(linkedList[linkedList.length-1].id.toString())
+  let div = document.getElementById(linkedList[0].id.toString())
   div?.setAttribute('class','found')
   setTimeout(() => {
     let newlist = [...linkedList]
-    if(linkedList.length-1 > 0){
-      newlist[linkedList.length-2].next = -1
-    }
-    newlist.splice(linkedList.length-1,1)
+    // if(linkedList.length-1 > 0){
+    //   newlist[linkedList.length-2].next = -1
+    // }
+    newlist.splice(0,1)
     setlinkedList(newlist)
     enableButtons()
     clearNodes()
@@ -309,6 +346,7 @@ function handleAddNode(){
                   <Orders />
                 </Paper>
               </Grid> */}
+              <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
             </Grid>
           </Container>
         </Box>
