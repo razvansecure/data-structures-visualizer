@@ -32,6 +32,7 @@ import CodeSectionList from './CodeSectionList';
 import linkedListAddCodeText from './codeText/linkedListAdd';
 import linkedListSearchCodeText from './codeText/linkedListSearch';
 import linkedListDeleteCodeText from './codeText/linkedListDelete';
+import { setSourceMapRange } from 'typescript';
 
 function Copyright(props: any) {
   return (
@@ -121,9 +122,14 @@ function DashboardContent() {
   const addRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const deleteRef = useRef<HTMLInputElement>(null);
+  const answerRef = useRef<HTMLInputElement>(null);
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
   const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
+  const [disabledFlagQuiz, setDisabledFlagQuiz] = React.useState(false)
+  
+  const [currentQuestion, setCurrentQuestion] = React.useState(0)
+  const [quizHide, setQuizHide] = React.useState(true)
   let showCodeAdd : CodeLine[];
   let showCodeSearch : CodeLine[];
   let showCodeDelete : CodeLine[];
@@ -174,12 +180,14 @@ function disableButtons(){
   setDisabledFlagAdd(true)
   setDisabledFlagSearch(true)
   setDisabledFlagDelete(true)
+  setDisabledFlagQuiz(true)
 }
 
 function enableButtons(){
   setDisabledFlagSearch(false)
   setDisabledFlagAdd(false)
   setDisabledFlagDelete(false)
+  setDisabledFlagQuiz(false)
 }
 
 function addNode(value: number){
@@ -406,10 +414,113 @@ function handleAddNode(){
     }
     else
       if(addRef.current != null)
-        addRef.current.value !== '' && addRef.current.value !== null && Number.isInteger(Number(addRef.current.value)) ? 
+        addRef.current.value !== '' && addRef.current.value !== null && Number.isInteger(Number(addRef.current.value)) && parseInt(addRef.current.value) >=0 ? 
           addNode(parseInt(addRef.current.value)) : setErrorMessage("You can only add integers!")
 
 }
+
+function highlightCodeLines(id : string){
+  for(let line = 0; line < codeLineList.length; line++)
+  {
+    let div = document.getElementById(id + line)
+    div?.setAttribute('class','')
+  }
+
+  for(let line = codeLinesQuiz[currentQuestion].start; line <= codeLinesQuiz[currentQuestion].end; line++){
+    let div = document.getElementById(id + line)
+    div?.setAttribute('class','highlighted')
+   }
+}
+
+function highlightCodeLinesSearch(){
+  // for(let line = 0; line < codeLineList.length; line++)
+  // {
+  //   let div = document.getElementById("code_search" + line)
+  //   div?.setAttribute('class','')
+  // }
+
+  for(let line = codeLinesQuiz[2].start; line <= codeLinesQuiz[2].end; line++){
+    console.log("code_search" + line)
+    let div = document.getElementById("code_search" + line)
+    div?.setAttribute('class','highlighted')
+   } 
+}
+
+const [score, setScore] = React.useState(0)
+const [quizSearch, setQuizSearch] = React.useState(-1)
+const [quizDelete, setQuizDelete] = React.useState(-1)
+
+function quiz_add() {
+  if(answerRef.current != null)
+    if(parseInt(answerRef.current.value) === linkedList.length -1)
+      {
+        setScore(score + 1)
+      }
+}
+
+function quiz_search() {
+  for(let poz = 0 ; poz < linkedList.length; poz++){
+    if(linkedList[poz].value === quizSearch){
+      if(answerRef.current != null){
+        if(parseInt(answerRef.current.value) === poz)
+          {
+            setScore(score + 1)
+          }
+      }
+      break;
+    }
+  }
+}
+
+function prepQuizSearch(){
+  let index = Math.floor(Math.random() * linkedList.length)
+  for(let poz = 0 ; poz < linkedList.length; poz++){
+    if(linkedList[poz].value === linkedList[index].value){
+      index = poz;
+      break;
+    }
+  }
+  setQuizSearch(linkedList[index].value)
+}
+
+const codeLinesQuiz = [{start: 5, end: 5, codeId: "code_add"}, {start : 5, end: 5, codeId: "code_search"}, {start : 3, end: 5, codeId: "code_delete"}]
+const quizQuestions = ["How many times will the highlighted code lines be executed?",
+ "How many times will the highlighted code lines be executed when searching for the first element with value " + quizSearch + "", 
+ "How many times will the highlighted code lines be executed when deleting the first element with value "+ quizDelete + ""]
+
+React.useEffect(() => {
+  // if(currentQuestion < codeLinesQuiz.length)
+  //   highlightCodeLines("")
+  switch(currentQuestion) {
+    case 1:
+      setcodeLineList([...showCodeSearch])//.then(() => highlightCodeLines("code_search"))
+      console.log("da")
+      quiz_add()
+      prepQuizSearch()
+      
+      break;
+    case 2: 
+      quiz_search()
+      setcodeLineList([...showCodeDelete])//.then(() => highlightCodeLines("code_delete"))
+      //prepQuizDelete()
+      break;
+    case 3:
+      //quiz_delete()
+      setQuizHide(true)
+      enableButtons()
+      setCurrentQuestion(0)
+      setScore(0)
+      break;
+    default:
+  }
+
+
+},[currentQuestion])
+
+React.useEffect(() => {
+  if(!quizHide)
+    highlightCodeLines(codeLinesQuiz[currentQuestion].codeId)
+},[codeLineList])
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -536,9 +647,23 @@ function handleAddNode(){
                 >
                   <Deposits />
                 </Paper> */}
-                
+                 <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
+                 <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
+                     disableButtons()
+                     setcodeLineList([...showCodeAdd])
+                     setQuizHide(false)
+                    }}>Take quiz</Button>
+                 <div hidden={quizHide}>
+                   <div>Question {currentQuestion + 1}/3</div>
+                   <div>{quizQuestions[currentQuestion]}</div>
+                   <TextField type="number" inputRef={answerRef}></TextField>
+                   <Button variant="contained" onClick={() => {
+                     setCurrentQuestion(currentQuestion + 1)
+                   }}>Answer</Button>
+                 </div>
+                 <div>{score}</div>
               </Grid>
-              <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
+             
               {/* Recent Orders */}
               {/* <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
@@ -556,3 +681,4 @@ function handleAddNode(){
 export default function Dashboard() {
   return <DashboardContent />;
 }
+

@@ -5,7 +5,7 @@ export default function LinkedList({linkedList}){
         <ul id='linkedlist'>
         {
         linkedList.map((node, index)=>{
-            return <LinkedListItem key={index} node = {node} size = {linkedList.length}/>
+            return <LinkedListItem key={node.id} node = {node} size = {linkedList.length}/>
         }
         )
         }     

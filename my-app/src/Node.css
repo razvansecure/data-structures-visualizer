@@ -33,21 +33,25 @@
     margin: 0 auto -100px auto;
     bottom:0;
     display: inline-block;
-    width:30%;
+    /* width:30%; */
     background-color: lightgray;
     text-align: left;
     /* text-align: center; */
     /* margin-left: 500px; */
+  }
+
+  #codeSection .highlighted{
+    color: red;
   }
   
  #linkedlist li{
     float: left;
     margin-top: 100px;
   }
-
+/* 
  #linkedlist .stack{
     float: left;
-  }
+  } */
 
   @keyframes makeItfadeIn {
     100% {
