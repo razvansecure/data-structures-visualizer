@@ -172,18 +172,21 @@ function enableButtons(){
 }
 
 function addNode(value: number){
+    disableButtons()
     setErrorMessage("")
     clearNodes()
     setcodeLineList([...showCodePush])
     let newlist = [...linkedList]
     if(newlist.length === 0){
       setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
+      enableButtons()
       return
     }
     const lastNode = newlist[newlist.length-1]
     lastNode.next = lastNode.id+1
 
     setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1, cssClass: ""}])
+    enableButtons()
 }
 
 const abortController = new AbortController();
@@ -274,8 +277,6 @@ function handleAddNode(){
           <Divider />
           <List component="nav">
             {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
           </List>
         </Drawer>
         <Box
@@ -321,6 +322,7 @@ function handleAddNode(){
                 </Stack>
                 <LinkedList linkedList = {linkedList} ></LinkedList>
                 <div className="error"> {errorMessage} </div>
+                <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
               </Grid>
               {/* <Grid item xs={12} md={4} lg={3}>
                 <Paper
@@ -340,7 +342,6 @@ function handleAddNode(){
                   <Orders />
                 </Paper>
               </Grid> */}
-              <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
             </Grid>
           </Container>
         </Box>

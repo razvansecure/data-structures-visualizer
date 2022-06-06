@@ -14,6 +14,7 @@ while(currentNode.next != null){\n\
     &emsp; &emsp; nodeToDelete.next = null;\n\
     &emsp; &emsp; return DELETED;\n\
     &emsp; }\n\
+    &emsp; currentNode = currentNode.next\n\
 }\n\
 return NOT_FOUND;"
 export default text;

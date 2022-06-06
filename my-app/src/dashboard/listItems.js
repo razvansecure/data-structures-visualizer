@@ -18,7 +18,7 @@ export const mainListItems = (
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="Linked list js" />
+      <ListItemText primary="Linked list" />
     </ListItemButton>
     </Link>
     <Link to='/queue' style={{ textDecoration: 'none' }}>
@@ -37,7 +37,7 @@ export const mainListItems = (
       <ListItemText primary="Stack" />
     </ListItemButton>
     </Link>
-    <ListItemButton>
+    {/* <ListItemButton>
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
@@ -48,7 +48,7 @@ export const mainListItems = (
         <LayersIcon />
       </ListItemIcon>
       <ListItemText primary="Integrations" />
-    </ListItemButton>
+    </ListItemButton> */}
   </React.Fragment>
 );
 

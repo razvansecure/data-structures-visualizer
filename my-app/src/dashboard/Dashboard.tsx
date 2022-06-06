@@ -191,6 +191,7 @@ function enableButtons(){
 }
 
 function addNode(value: number){
+    disableButtons()
     setErrorMessage("")
     clearNodes()
     setcodeLineList([...showCodeAdd])
@@ -199,12 +200,14 @@ function addNode(value: number){
     let newlist = [...linkedList]
     if(newlist.length === 0){
       setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
+      enableButtons()
       return
     }
     const lastNode = newlist[newlist.length-1]
     lastNode.next = lastNode.id+1
 
     setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1, cssClass: ""}])
+    enableButtons()
 }
 
 const abortController = new AbortController();
@@ -432,20 +435,6 @@ function highlightCodeLines(id : string){
    }
 }
 
-function highlightCodeLinesSearch(){
-  // for(let line = 0; line < codeLineList.length; line++)
-  // {
-  //   let div = document.getElementById("code_search" + line)
-  //   div?.setAttribute('class','')
-  // }
-
-  for(let line = codeLinesQuiz[2].start; line <= codeLinesQuiz[2].end; line++){
-    console.log("code_search" + line)
-    let div = document.getElementById("code_search" + line)
-    div?.setAttribute('class','highlighted')
-   } 
-}
-
 const [score, setScore] = React.useState(0)
 const [quizSearch, setQuizSearch] = React.useState(-1)
 const [quizDelete, setQuizDelete] = React.useState(-1)
@@ -472,6 +461,20 @@ function quiz_search() {
   }
 }
 
+function quiz_delete() {
+  for(let poz = 0 ; poz < linkedList.length; poz++){
+    if(linkedList[poz].value === quizDelete){
+      if(answerRef.current != null){
+        if(parseInt(answerRef.current.value) === Math.max(0,poz - 1))
+          {
+            setScore(score + 1)
+          }
+      }
+      break;
+    }
+  }
+}
+
 function prepQuizSearch(){
   let index = Math.floor(Math.random() * linkedList.length)
   for(let poz = 0 ; poz < linkedList.length; poz++){
@@ -483,38 +486,59 @@ function prepQuizSearch(){
   setQuizSearch(linkedList[index].value)
 }
 
-const codeLinesQuiz = [{start: 5, end: 5, codeId: "code_add"}, {start : 5, end: 5, codeId: "code_search"}, {start : 3, end: 5, codeId: "code_delete"}]
+function prepQuizDelete(){
+  let index = Math.floor(Math.random() * linkedList.length)
+  for(let poz = 0 ; poz < linkedList.length; poz++){
+    if(linkedList[poz].value === linkedList[index].value){
+      index = poz;
+      break;
+    }
+  }
+  setQuizDelete(linkedList[index].value)
+}
+
+function addRandomElementsInList(){
+  let newlist = [...linkedList]
+  if(newlist.length < 4)
+    while(newlist.length < Math.floor(Math.random() * 5) + 3){
+      if(newlist.length === 0){
+        newlist = [{id: 0, value: Math.floor(Math.random() * 100), next: -1, cssClass: ""}]
+      }
+      else{
+      const lastNode = newlist[newlist.length-1]
+      lastNode.next = lastNode.id+1
+
+      newlist = [...newlist, {id: lastNode.id+1, value: Math.floor(Math.random() * 100), next: -1, cssClass: ""}]
+      }
+    }
+  setlinkedList(newlist)
+}
+
+const codeLinesQuiz = [{start: 7, end: 7, codeId: "code_add"}, {start : 5, end: 5, codeId: "code_search"}, {start : 16, end: 16, codeId: "code_delete"}]
 const quizQuestions = ["How many times will the highlighted code lines be executed?",
  "How many times will the highlighted code lines be executed when searching for the first element with value " + quizSearch + "", 
  "How many times will the highlighted code lines be executed when deleting the first element with value "+ quizDelete + ""]
 
 React.useEffect(() => {
-  // if(currentQuestion < codeLinesQuiz.length)
-  //   highlightCodeLines("")
   switch(currentQuestion) {
     case 1:
-      setcodeLineList([...showCodeSearch])//.then(() => highlightCodeLines("code_search"))
+      setcodeLineList([...showCodeSearch])
       console.log("da")
       quiz_add()
       prepQuizSearch()
-      
       break;
     case 2: 
       quiz_search()
-      setcodeLineList([...showCodeDelete])//.then(() => highlightCodeLines("code_delete"))
-      //prepQuizDelete()
+      setcodeLineList([...showCodeDelete])
+      prepQuizDelete()
       break;
     case 3:
-      //quiz_delete()
+      quiz_delete()
       setQuizHide(true)
       enableButtons()
-      setCurrentQuestion(0)
-      setScore(0)
       break;
     default:
   }
-
-
 },[currentQuestion])
 
 React.useEffect(() => {
@@ -576,8 +600,8 @@ React.useEffect(() => {
           <Divider />
           <List component="nav">
             {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            {/* <Divider sx={{ my: 1 }} />
+            {secondaryListItems} */}
           </List>
         </Drawer>
         <Box
@@ -647,21 +671,29 @@ React.useEffect(() => {
                 >
                   <Deposits />
                 </Paper> */}
+                 <div id="codeQuizWrapper">
                  <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
+                 <div id="quiz">
                  <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
-                     disableButtons()
-                     setcodeLineList([...showCodeAdd])
-                     setQuizHide(false)
+                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(()=>{                  
+                      setScore(0)
+                      setCurrentQuestion(0)
+                      setcodeLineList([...showCodeAdd])
+                      setQuizHide(false)
+                    })
+
                     }}>Take quiz</Button>
                  <div hidden={quizHide}>
                    <div>Question {currentQuestion + 1}/3</div>
-                   <div>{quizQuestions[currentQuestion]}</div>
+                   <div id='currentQuizQuestion'>{quizQuestions[currentQuestion]}</div>
                    <TextField type="number" inputRef={answerRef}></TextField>
                    <Button variant="contained" onClick={() => {
                      setCurrentQuestion(currentQuestion + 1)
                    }}>Answer</Button>
                  </div>
-                 <div>{score}</div>
+                 <div id='currentScore'>Your score is {score}/{currentQuestion}</div>
+                 </div>
+                 </div>
               </Grid>
              
               {/* Recent Orders */}

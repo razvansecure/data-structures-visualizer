@@ -40,8 +40,13 @@
     /* margin-left: 500px; */
   }
 
+  #codeQuizWrapper {
+    display: flex;
+  }
+
   #codeSection .highlighted{
     color: red;
+    font-weight: bold;
   }
   
  #linkedlist li{
