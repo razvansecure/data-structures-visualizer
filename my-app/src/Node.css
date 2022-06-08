@@ -30,29 +30,47 @@
   #codeSection{
     /* position:absolute; */
     list-style-type: none;
-    margin: 0 auto -100px auto;
+    margin: 0 auto -100px 0;
     bottom:0;
     display: inline-block;
     /* width:30%; */
     background-color: lightgray;
     text-align: left;
+    height: auto;
+    float: left;
     /* text-align: center; */
     /* margin-left: 500px; */
   }
 
+  #codeSection:empty{
+    display: none;
+  }
+
   #codeQuizWrapper {
-    display: flex;
+    width: 1300px;
   }
 
   #codeSection .highlighted{
     color: red;
     font-weight: bold;
   }
+
+  #quiz {
+    float:left;
+    margin: 0 0 0 100px;
+  }
   
  #linkedlist li{
     float: left;
     margin-top: 100px;
   }
+
+  #answerButton{
+    margin-left: 30px;
+    height: 55px;
+    width: 100px;
+  }
+
 /* 
  #linkedlist .stack{
     float: left;

@@ -50,8 +50,7 @@ const drawerWidth: number = 240;
 interface Node {
   id: number,
   value: number,
-  next: number,
-  cssClass: string
+  next: number
 }
 
 interface CodeLine{
@@ -124,8 +123,14 @@ function QueueContent() {
   const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
 
+  React.useEffect(() => {
+    setlinkedList([{id: 0, value: Math.floor(Math.random() * 100), next: 1},{id: 1, value: Math.floor(Math.random() * 100), next: 2},
+      {id: 2, value: Math.floor(Math.random() * 100), next: -1}])
+  },[])
+
   let showCodePush : CodeLine[];
   let showCodePop : CodeLine[];
+
 
    /// load code from file for each operation
   loadPushCode()
@@ -178,14 +183,14 @@ function addNode(value: number){
     setcodeLineList([...showCodePush])
     let newlist = [...linkedList]
     if(newlist.length === 0){
-      setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
+      setlinkedList([{id: 0, value: value, next: -1}])
       enableButtons()
       return
     }
     const lastNode = newlist[newlist.length-1]
     lastNode.next = lastNode.id+1
 
-    setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1, cssClass: ""}])
+    setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1}])
     enableButtons()
 }
 
@@ -254,11 +259,6 @@ function handleAddNode(){
             >
                Queue
             </Typography>
-            {/* <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -296,24 +296,7 @@ function handleAddNode(){
             <Grid container spacing={3}>
               
               <Grid item xs={15} md={8} lg={20}>
-                {/* <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                </Paper> */}
-                {/* <div id='wrapper'>
-                <ul id='linkedlist'>
-                  <li><div id='1'>1</div></li>
-                  <li><div id='2'>2</div></li>
-                </ul>
-                <input type="text" ref={addRef}></input>
-                <button onClick={() => addNode(parseInt(addRef.current.value))}>add node</button>
-                <Xarrow start='1' end='2'/>
-                </div> */}
+            
                 <Stack spacing={2} direction="row">
                 <TextField type="number" inputRef={addRef}></TextField>
                 <Button variant="contained" disabled={disabledFlagAdd} onClick={handleAddNode}>push node</Button>
@@ -322,26 +305,11 @@ function handleAddNode(){
                 </Stack>
                 <LinkedList linkedList = {linkedList} ></LinkedList>
                 <div className="error"> {errorMessage} </div>
+                
+              </Grid>
+              <Grid item xs={12} md={4} lg={300}>
                 <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
               </Grid>
-              {/* <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid> */}
-              {/* Recent Orders */}
-              {/* <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
-                </Paper>
-              </Grid> */}
             </Grid>
           </Container>
         </Box>

@@ -52,8 +52,7 @@ const drawerWidth: number = 240;
 interface Node {
   id: number,
   value: number,
-  next: number,
-  cssClass: string
+  next: number
 }
 
 interface CodeLine{
@@ -138,6 +137,11 @@ function DashboardContent() {
   loadSearchCode()
   loadDeleteCode()
 
+  React.useEffect(() => {
+    setlinkedList([{id: 0, value: Math.floor(Math.random() * 100), next: 1},{id: 1, value: Math.floor(Math.random() * 100), next: 2},
+      {id: 2, value: Math.floor(Math.random() * 100), next: -1}])
+  },[])
+
   function loadAddCode(){
     let newCodeLineList : CodeLine[] = []
     let index = 0
@@ -199,14 +203,14 @@ function addNode(value: number){
     console.log(showCodeSearch)
     let newlist = [...linkedList]
     if(newlist.length === 0){
-      setlinkedList([{id: 0, value: value, next: -1, cssClass: ""}])
+      setlinkedList([{id: 0, value: value, next: -1}])
       enableButtons()
       return
     }
     const lastNode = newlist[newlist.length-1]
     lastNode.next = lastNode.id+1
 
-    setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1, cssClass: ""}])
+    setlinkedList([...newlist, {id: lastNode.id+1, value: value, next: -1}])
     enableButtons()
 }
 
@@ -277,52 +281,6 @@ function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: pas
   }
 }
 
-// function parseNodesAndDelete(listIndex: number, value: number){
-//   if(listIndex < linkedList.length){
-//     let div = document.getElementById(linkedList[listIndex].id.toString())
-//     if(div !== null){
-//     if(linkedList[listIndex].value === value){
-//       let deletedId = linkedList[listIndex].id
-//       //div?.setAttribute('class','visited')
-//       div.addEventListener('animationend',()=>{
-//         //div?.setAttribute('class','found')
-//         div?.classList.remove("visited")
-//         div?.classList.add("found")
-//         if(div !== null){
-//         let newlist = [...linkedList]
-//         if(listIndex > 0){
-//           if(listIndex+1 < linkedList.length)
-//             newlist[listIndex-1].next = newlist[listIndex+1].id
-//           else
-//             newlist[listIndex-1].next = -1
-//         }
-//         newlist = newlist.filter(item => item.id !== deletedId)
-//         setlinkedList([...newlist])
-//         // newlist.forEach((item) => {
-//         //   let div = document.getElementById(item.id.toString())
-//         //   console.log(div?.id)
-//         //   div?.setAttribute('class','')
-//         //   console.log(div?.className)
-//         // })
-//         abortController.abort()
-//         enableButtons()
-//       }},{ signal: abortController.signal })
-//       div.classList.add("visited")
-//       return;
-//     }
-//     div.addEventListener('animationend',()=>{
-//       parseNodesAndDelete(listIndex + 1, value)
-//     },{ signal: abortController.signal })
-//     //div.className = "visited"
-//     div.classList.add("visited")
-//   }
-//   }
-//   else{
-//     abortController.abort()
-//     enableButtons()
-//   }
-// }
-
 async function searchNode(value: number){
     disableButtons()
     setErrorMessage("")
@@ -347,68 +305,15 @@ async function deleteNode(value: number){
     console.log("abort")
       let newlist = [...linkedList]
       let listIndex = deletedIndex.index
-      // console.log(listIndex)
-      // if(listIndex > 0){
-      //   if(listIndex+1 < linkedList.length)
-      //     newlist[listIndex-1].next = newlist[listIndex+1].id
-      //   else
-      //     newlist[listIndex-1].next = -1
-      // }
       if(listIndex > -1){
         newlist = newlist.filter(item => item.id !== linkedList[listIndex].id)
         console.log(newlist)
         setlinkedList([...newlist])
         setErrorMessage("Element " + value + " has been successfully deleted from the list")
       }
-      // setlinkedList([...newlist])
-      // if(listIndex > 0 && listIndex < newlist.length)
-      //   newlist[listIndex-1].next = newlist[listIndex].id
-      //setlinkedList([...linkedList.slice(0, listIndex), ...linkedList.slice(listIndex + 1)])
       clearNodes()
       enableButtons()
   },2000)
-  //await new Promise(r => setTimeout(r, 1000))
-  // let newlist = [...linkedList]
-  // let listIndex = deletedIndex.index
-  // console.log(listIndex)
-  // if(listIndex > 0){
-  //   if(listIndex+1 < linkedList.length)
-  //     newlist[listIndex-1].next = newlist[listIndex+1].id
-  //   else
-  //     newlist[listIndex-1].next = -1
-  // }
-  // newlist = newlist.filter(item => item.id !== linkedList[listIndex].id)
-  // setlinkedList([...newlist])
-  
-  // let i=0;
-  // let deletedId = -1;
-  // for(i=0; i<linkedList.length; i++){
-  //   var div = document.getElementById(linkedList[i].id.toString())
-  //   let currentValue = linkedList[i].value
-  //   if(currentValue === value){
-  //       div?.setAttribute('class','found')
-  //       deletedId = linkedList[i].id
-  //       await new Promise(r => setTimeout(r, 1000));
-  //       break
-  //     }
-  //   div?.setAttribute('class','visited')
-  //   await new Promise(r => setTimeout(r, 1000));
-  // }
-  // let newlist = [...linkedList]
-  // if(i < linkedList.length){
-  //   if(i > 0){
-  //     if(i+1 < linkedList.length)
-  //       newlist[i-1].next = newlist[i+1].id
-  //     else
-  //       newlist[i-1].next = -1
-  //   }
-  //   //setlinkedList([...newlist])
-  //   //await new Promise(r => setTimeout(r, 1000));
-  //   newlist = newlist.filter(item => item.id !== deletedId)
-  //   //clearNodes()
-  //   setlinkedList([...newlist])
-  // }
-  // enableButtons()
 }
 
 function handleAddNode(){
@@ -502,13 +407,13 @@ function addRandomElementsInList(){
   if(newlist.length < 4)
     while(newlist.length < Math.floor(Math.random() * 5) + 3){
       if(newlist.length === 0){
-        newlist = [{id: 0, value: Math.floor(Math.random() * 100), next: -1, cssClass: ""}]
+        newlist = [{id: 0, value: Math.floor(Math.random() * 100), next: -1}]
       }
       else{
       const lastNode = newlist[newlist.length-1]
       lastNode.next = lastNode.id+1
 
-      newlist = [...newlist, {id: lastNode.id+1, value: Math.floor(Math.random() * 100), next: -1, cssClass: ""}]
+      newlist = [...newlist, {id: lastNode.id+1, value: Math.floor(Math.random() * 100), next: -1}]
       }
     }
   setlinkedList(newlist)
@@ -534,6 +439,7 @@ React.useEffect(() => {
       break;
     case 3:
       quiz_delete()
+      setcodeLineList([])
       setQuizHide(true)
       enableButtons()
       break;
@@ -577,11 +483,6 @@ React.useEffect(() => {
             >
               Linked List
             </Typography>
-            {/* <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -621,24 +522,6 @@ React.useEffect(() => {
             <Grid container spacing={3}>
               
               <Grid item xs={15} md={8} lg={20}>
-                {/* <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                </Paper> */}
-                {/* <div id='wrapper'>
-                <ul id='linkedlist'>
-                  <li><div id='1'>1</div></li>
-                  <li><div id='2'>2</div></li>
-                </ul>
-                <input type="text" ref={addRef}></input>
-                <button onClick={() => addNode(parseInt(addRef.current.value))}>add node</button>
-                <Xarrow start='1' end='2'/>
-                </div> */}
                 <Stack spacing={2} direction="row">
                 <TextField type="number" inputRef={addRef}></TextField>
                 <Button variant="contained" disabled={disabledFlagAdd} onClick={handleAddNode}>add node</Button>
@@ -661,16 +544,6 @@ React.useEffect(() => {
                 <div className="error"> {errorMessage} </div>
               </Grid>
               <Grid item xs={12} md={4} lg={300}>
-                {/* <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper> */}
                  <div id="codeQuizWrapper">
                  <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
                  <div id="quiz">
@@ -687,7 +560,7 @@ React.useEffect(() => {
                    <div>Question {currentQuestion + 1}/3</div>
                    <div id='currentQuizQuestion'>{quizQuestions[currentQuestion]}</div>
                    <TextField type="number" inputRef={answerRef}></TextField>
-                   <Button variant="contained" onClick={() => {
+                   <Button id="answerButton" variant="contained" onClick={() => {
                      setCurrentQuestion(currentQuestion + 1)
                    }}>Answer</Button>
                  </div>
@@ -696,12 +569,6 @@ React.useEffect(() => {
                  </div>
               </Grid>
              
-              {/* Recent Orders */}
-              {/* <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
-                </Paper>
-              </Grid> */}
             </Grid>
           </Container>
         </Box>
