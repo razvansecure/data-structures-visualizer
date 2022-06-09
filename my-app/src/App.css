@@ -1,0 +1,121 @@
+.node { 
+    /* width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    color: #61dafb;
+    background: #000 */
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    font-size: 20px;
+    margin-left:50px;
+    color: #fff;
+    text-align: center;
+    /* color: #61dafb;  */
+    background: #000   
+  }
+  
+  #linkedlist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  #codeSection{
+    /* position:absolute; */
+    list-style-type: none;
+    margin: 0 auto -100px 0;
+    bottom:0;
+    display: inline-block;
+    /* width:30%; */
+    background-color: lightgray;
+    text-align: left;
+    height: auto;
+    float: left;
+    /* text-align: center; */
+    /* margin-left: 500px; */
+  }
+
+  #codeSection:empty{
+    display: none;
+  }
+
+  #codeQuizWrapper {
+    width: 1300px;
+  }
+
+  #codeSection .highlighted{
+    color: red;
+    font-weight: bold;
+  }
+
+  #quiz {
+    float:left;
+    margin: 0 0 0 100px;
+  }
+  
+ #linkedlist li{
+    float: left;
+    margin-top: 100px;
+  }
+
+  #answerButton{
+    margin-left: 30px;
+    height: 55px;
+    width: 100px;
+  }
+
+/* 
+ #linkedlist .stack{
+    float: left;
+  } */
+
+  @keyframes makeItfadeIn {
+    100% {
+      background-position: left;
+    }
+  }
+  
+  .visited {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    font-size: 20px;
+    margin-left:50px;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(to right, #D2E526 50%, black 0);
+    background-size: 200% 100%;
+    background-position: right;
+    animation: makeItfadeIn 2s 1s forwards;
+  }
+
+  .found {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    font-size: 20px;
+    margin-left:50px;
+    color: #fff;
+    text-align: center;
+    background: #38ca35;
+    border: 1px solid black;
+  }
+
+  .arrow{
+    position:relative;
+    width: 100px;
+  }
+
+  #linkedlisticon{
+    width: 102 px;
+    height: 10 px;
+  }

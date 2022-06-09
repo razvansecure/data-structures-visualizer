@@ -10,13 +10,17 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Link} from 'react-router-dom';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import LinkedListIcon from './icons/LinkedListIcon'
+import QueueIcon from './icons/QueueIcon'
+import StackIcon from './icons/StackIcon'
 
 export const mainListItems = (
   <React.Fragment>
     <Link to='/linkedlist' style={{ textDecoration: 'none' }}>
     <ListItemButton>
       <ListItemIcon>
-        <DashboardIcon />
+        <LinkedListIcon></LinkedListIcon>
       </ListItemIcon>
       <ListItemText primary="Linked list" />
     </ListItemButton>
@@ -24,7 +28,7 @@ export const mainListItems = (
     <Link to='/queue' style={{ textDecoration: 'none' }}>
     <ListItemButton>
       <ListItemIcon>
-        <ShoppingCartIcon />
+       <QueueIcon></QueueIcon>
       </ListItemIcon>
       <ListItemText primary="Queue" />
     </ListItemButton>
@@ -32,7 +36,7 @@ export const mainListItems = (
     <Link to='/stack' style={{ textDecoration: 'none' }}>
     <ListItemButton>
       <ListItemIcon>
-        <PeopleIcon />
+        <StackIcon></StackIcon>
       </ListItemIcon>
       <ListItemText primary="Stack" />
     </ListItemButton>

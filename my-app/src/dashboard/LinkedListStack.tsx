@@ -19,7 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
 import * as ReactDOMClient from 'react-dom/client';
-import '../Node.css';
+import '../App.css';
 import Xarrow from "react-xarrows";
 import { useRef, useState } from 'react';
 import StackList from "./StackList"

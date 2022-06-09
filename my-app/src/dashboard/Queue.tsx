@@ -19,7 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
 import * as ReactDOMClient from 'react-dom/client';
-import '../Node.css';
+import '../App.css';
 import Xarrow from "react-xarrows";
 import { useRef, useState } from 'react';
 import LinkedList from "./LinkedList"
@@ -270,10 +270,10 @@ function addRandomElementsInList(){
   setlinkedList(newlist)
 }
 
-const quizQuestions = ["What is the last element that gets popped out of the queue if we execute the following sequence:\
-  pop push(" + Math.floor(Math.random() * 100) + ") push("+ Math.floor(Math.random() * 100) + ") pop pop pop",
-  "What is the last element that gets popped out of the queue if we execute the following sequence:\
-  push(" + Math.floor(Math.random() * 100) + ") pop push("+ Math.floor(Math.random() * 100) + ") pop pop"]
+const quizQuestions = ["What is the last element that gets popped out of the queue if we execute the following sequence: "+
+  "pop push(" + Math.floor(Math.random() * 100) + ") push("+ Math.floor(Math.random() * 100) + ") pop pop pop",
+  "What is the last element that gets popped out of the queue if we execute the following sequence: " +
+  "push(" + Math.floor(Math.random() * 100) + ") pop push("+ Math.floor(Math.random() * 100) + ") pop pop"]
 
 React.useEffect(() => {
   switch(currentQuestion) {
