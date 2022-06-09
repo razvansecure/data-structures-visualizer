@@ -10,24 +10,16 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
-import * as ReactDOMClient from 'react-dom/client';
 import '../App.css';
-import Xarrow from "react-xarrows";
 import { useRef, useState } from 'react';
 import StackList from "./StackList"
-import { Nightlife } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import LeaderLine from 'leader-line-new';
-import LinkedListItem from './LinkedListItem';
 import CodeSectionList from './CodeSectionList';
 import stackPushCodeText from './codeText/stackPush'
 import stackPopCodeText from './codeText/stackPop'
@@ -177,7 +169,7 @@ function enableButtons(){
 
 function addNode(value: number){
     disableButtons()
-    setErrorMessage("")
+    setErrorMessage("To push an element to the stack, we set the element's next to the head and we make the pushed element the new head.")
     clearNodes()
     setcodeLineList([...showCodePush])
     let newlist = [...linkedList]
@@ -197,12 +189,6 @@ function addNode(value: number){
     enableButtons()
 }
 
-const abortController = new AbortController();
-
-interface passIndex{
-  index: number
-}
-
 async function deleteNode(){
   setcodeLineList([...showCodePop])
   if(linkedList.length === 0){
@@ -210,7 +196,7 @@ async function deleteNode(){
     return
   }
   disableButtons()
-  setErrorMessage("")
+  setErrorMessage("To pop an element from a stack, we set the head to the head's next and we delete the previous head's next")
   await Promise.resolve(clearNodes())
   let div = document.getElementById(linkedList[0].id.toString())
   div?.setAttribute('class','found')
@@ -274,11 +260,11 @@ function addRandomElementsInList(){
   setlinkedList(newlist)
 }
 
-const quizQuestions = ["What is the last element that gets popped out of the queue if we execute the following sequence:\
-  pop push(" + Math.floor(Math.random() * 100) + ") push("+ Math.floor(Math.random() * 100) + ") pop pop pop",
-  "What is the last element that gets popped out of the queue if we execute the following sequence:\
-  push(" + Math.floor(Math.random() * 100) + ") pop push("+ Math.floor(Math.random() * 100) + ") \
-  push("+ answerQuiz2 + ") push("+ Math.floor(Math.random() * 100) + ") pop pop"]
+const quizQuestions = ["What is the last element that gets popped out of the queue if we execute the following sequence: " +
+  "pop push(" + Math.floor(Math.random() * 100) + ") push("+ Math.floor(Math.random() * 100) + ") pop pop pop",
+  "What is the last element that gets popped out of the queue if we execute the following sequence: " +
+  "push(" + Math.floor(Math.random() * 100) + ") pop push("+ Math.floor(Math.random() * 100) + ") " +
+  "push("+ answerQuiz2 + ") push("+ Math.floor(Math.random() * 100) + ") pop pop"]
 
 React.useEffect(() => {
   switch(currentQuestion) {
@@ -335,9 +321,6 @@ React.useEffect(() => {
               px: [1],
             }}
           >
-            {/* <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton> */}
           </Toolbar>
           <Divider />
           <List component="nav">
@@ -375,7 +358,7 @@ React.useEffect(() => {
                  <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
                  <div id="quiz">
                  <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
-                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(()=>{                  
+                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(() => setErrorMessage("")).then(()=>{                  
                       setScore(0)
                       setCurrentQuestion(0)
                       setcodeLineList([])

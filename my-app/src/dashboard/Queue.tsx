@@ -10,24 +10,16 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
-import * as ReactDOMClient from 'react-dom/client';
 import '../App.css';
-import Xarrow from "react-xarrows";
 import { useRef, useState } from 'react';
 import LinkedList from "./LinkedList"
-import { Nightlife } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import LeaderLine from 'leader-line-new';
-import LinkedListItem from './LinkedListItem';
 import CodeSectionList from './CodeSectionList';
 import queuePushCodeText from './codeText/queuePush'
 import queuePopCodeText from './codeText/queuePop'
@@ -117,10 +109,7 @@ function QueueContent() {
   const [linkedList, setlinkedList] = useState<Node[]>([])
   const [codeLineList, setcodeLineList] = useState<CodeLine[]>([])
   const addRef = useRef<HTMLInputElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const deleteRef = useRef<HTMLInputElement>(null);
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
-  const [disabledFlagSearch, setDisabledFlagSearch] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
   const [disabledFlagQuiz, setDisabledFlagQuiz] = React.useState(false)
 
@@ -167,13 +156,11 @@ function clearNodes(){
 
 function disableButtons(){
   setDisabledFlagAdd(true)
-  setDisabledFlagSearch(true)
   setDisabledFlagDelete(true)
   setDisabledFlagQuiz(true)
 }
 
 function enableButtons(){
-  setDisabledFlagSearch(false)
   setDisabledFlagAdd(false)
   setDisabledFlagDelete(false)
   setDisabledFlagQuiz(false)
@@ -181,7 +168,7 @@ function enableButtons(){
 
 function addNode(value: number){
     disableButtons()
-    setErrorMessage("")
+    setErrorMessage("To push an element to a queue, we add it to the next of the tail (or we make it the tail and head if the tail is null).")
     clearNodes()
     setcodeLineList([...showCodePush])
     let newlist = [...linkedList]
@@ -197,8 +184,6 @@ function addNode(value: number){
     enableButtons()
 }
 
-const abortController = new AbortController();
-
 async function deleteNode(){
   setcodeLineList([...showCodePop])
   if(linkedList.length === 0){
@@ -206,7 +191,7 @@ async function deleteNode(){
     return
   }
   disableButtons()
-  setErrorMessage("")
+  setErrorMessage("To pop an element from a queue, we set the head to the head's next and we delete the previous head's next")
   await Promise.resolve(clearNodes())
   let div = document.getElementById(linkedList[0].id.toString())
   div?.setAttribute('class','found')
@@ -231,8 +216,6 @@ function handleAddNode(){
 }
 
 const [score, setScore] = React.useState(0)
-const [quizSearch, setQuizSearch] = React.useState(-1)
-const [quizDelete, setQuizDelete] = React.useState(-1)
 const [currentQuestion, setCurrentQuestion] = React.useState(0)
 const [quizHide, setQuizHide] = React.useState(true)
 const answerRef = useRef<HTMLInputElement>(null);
@@ -330,9 +313,6 @@ React.useEffect(() => {
               px: [1],
             }}
           >
-            {/* <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton> */}
           </Toolbar>
           <Divider />
           <List component="nav">
@@ -372,7 +352,7 @@ React.useEffect(() => {
                  <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
                  <div id="quiz">
                  <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
-                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(()=>{                  
+                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(() => setErrorMessage("")).then(()=>{                  
                       setScore(0)
                       setCurrentQuestion(0)
                       setcodeLineList([])

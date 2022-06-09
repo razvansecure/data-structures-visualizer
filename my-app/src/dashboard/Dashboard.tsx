@@ -10,29 +10,20 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
-import * as ReactDOMClient from 'react-dom/client';
 import '../App.css';
-import Xarrow from "react-xarrows";
 import { useRef, useState } from 'react';
 import LinkedList from "./LinkedList"
-import { Nightlife } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import LeaderLine from 'leader-line-new';
-import LinkedListItem from './LinkedListItem';
 import CodeSectionList from './CodeSectionList';
 import linkedListAddCodeText from './codeText/linkedListAdd';
 import linkedListSearchCodeText from './codeText/linkedListSearch';
 import linkedListDeleteCodeText from './codeText/linkedListDelete';
-import { setSourceMapRange } from 'typescript';
 
 function Copyright(props: any) {
   return (
@@ -194,7 +185,8 @@ function enableButtons(){
 
 function addNode(value: number){
     disableButtons()
-    setErrorMessage("")
+    setErrorMessage("When adding an element to a linked list, we parse the list until we find an element which has " + 
+    "the next equal to null(the last element) and we add the new element to its next or we make the new element the head if the list is empty.")
     clearNodes()
     setcodeLineList([...showCodeAdd])
     let newlist = [...linkedList]
@@ -279,7 +271,8 @@ function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: pas
 
 async function searchNode(value: number){
     disableButtons()
-    setErrorMessage("")
+    setErrorMessage("When searching for an element in a linked list, we parse the list until we find and element " +
+     "or until the next element is null which means the element doesnt exist in the list.")
     setcodeLineList([...showCodeSearch])
     await Promise.resolve(clearNodes())
     parseNodes(0,value)
@@ -293,7 +286,9 @@ async function deleteNode(value: number){
     return;
   }
   disableButtons()
-  setErrorMessage("")
+  setErrorMessage("When wanting to delete an element from a linked list, we do the same as when we are searching but we "+
+  "test the current's element next instead of the current element. This way, if we find that the current element's next is "+
+  "the one we want to delete, we just set the current element's next to the next of its next.")
   await Promise.resolve(clearNodes())
   let deletedIndex = {index: -1}
   parseNodesAndDelete(0, value, deletedIndex)
@@ -543,7 +538,7 @@ React.useEffect(() => {
                  <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
                  <div id="quiz">
                  <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
-                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(()=>{                  
+                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(() => setErrorMessage("")).then(()=>{                  
                       setScore(0)
                       setCurrentQuestion(0)
                       setcodeLineList([...showCodeAdd])

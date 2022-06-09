@@ -1,4 +1,4 @@
-import Xarrow, {useXarrow, Xwrapper } from "react-xarrows";
+import Xarrow from "react-xarrows";
 
 export default function LinkedListItem({node, size}){
     return(
