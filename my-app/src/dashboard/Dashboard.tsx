@@ -127,8 +127,6 @@ function DashboardContent() {
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
   const [disabledFlagQuiz, setDisabledFlagQuiz] = React.useState(false)
   
-  const [currentQuestion, setCurrentQuestion] = React.useState(0)
-  const [quizHide, setQuizHide] = React.useState(true)
   let showCodeAdd : CodeLine[];
   let showCodeSearch : CodeLine[];
   let showCodeDelete : CodeLine[];
@@ -199,8 +197,6 @@ function addNode(value: number){
     setErrorMessage("")
     clearNodes()
     setcodeLineList([...showCodeAdd])
-    console.log(showCodeAdd)
-    console.log(showCodeSearch)
     let newlist = [...linkedList]
     if(newlist.length === 0){
       setlinkedList([{id: 0, value: value, next: -1}])
@@ -302,12 +298,10 @@ async function deleteNode(value: number){
   let deletedIndex = {index: -1}
   parseNodesAndDelete(0, value, deletedIndex)
   abortController.signal.onabort = () => setTimeout(() => {
-    console.log("abort")
       let newlist = [...linkedList]
       let listIndex = deletedIndex.index
       if(listIndex > -1){
         newlist = newlist.filter(item => item.id !== linkedList[listIndex].id)
-        console.log(newlist)
         setlinkedList([...newlist])
         setErrorMessage("Element " + value + " has been successfully deleted from the list")
       }
@@ -343,6 +337,8 @@ function highlightCodeLines(id : string){
 const [score, setScore] = React.useState(0)
 const [quizSearch, setQuizSearch] = React.useState(-1)
 const [quizDelete, setQuizDelete] = React.useState(-1)
+const [currentQuestion, setCurrentQuestion] = React.useState(0)
+const [quizHide, setQuizHide] = React.useState(true)
 
 function quiz_add() {
   if(answerRef.current != null)
@@ -428,7 +424,6 @@ React.useEffect(() => {
   switch(currentQuestion) {
     case 1:
       setcodeLineList([...showCodeSearch])
-      console.log("da")
       quiz_add()
       prepQuizSearch()
       break;

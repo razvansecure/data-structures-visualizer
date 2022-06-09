@@ -119,6 +119,8 @@ function LinkedListStackContent() {
   const addRef = useRef<HTMLInputElement>(null);
   const [disabledFlagAdd, setDisabledFlagAdd] = React.useState(false)
   const [disabledFlagDelete, setDisabledFlagDelete] = React.useState(false)
+  const [disabledFlagQuiz, setDisabledFlagQuiz] = React.useState(false)
+  const [answerQuiz2,setAnswerQuiz2] = React.useState(0)
 
   let showCodePush : CodeLine[];
   let showCodePop : CodeLine[];
@@ -126,6 +128,7 @@ function LinkedListStackContent() {
   React.useEffect(() => {
     setlinkedList([{id: 2, value: Math.floor(Math.random() * 100), next: 1},{id: 1, value: Math.floor(Math.random() * 100), next: 0},
       {id: 0, value: Math.floor(Math.random() * 100), next: -1}])
+    setAnswerQuiz2(Math.floor(Math.random() * 100))
   },[])
 
    /// load code from file for each operation
@@ -163,11 +166,13 @@ function clearNodes(){
 function disableButtons(){
   setDisabledFlagAdd(true)
   setDisabledFlagDelete(true)
+  setDisabledFlagQuiz(true)
 }
 
 function enableButtons(){
   setDisabledFlagAdd(false)
   setDisabledFlagDelete(false)
+  setDisabledFlagQuiz(false)
 }
 
 function addNode(value: number){
@@ -232,6 +237,61 @@ function handleAddNode(){
           addNode(parseInt(addRef.current.value)) : setErrorMessage("You can only add integers!")
 
 }
+
+const [score, setScore] = React.useState(0)
+const [currentQuestion, setCurrentQuestion] = React.useState(0)
+const [quizHide, setQuizHide] = React.useState(true)
+const answerRef = useRef<HTMLInputElement>(null);
+
+function quiz_1() {
+  if(answerRef.current != null)
+    if(parseInt(answerRef.current.value) === linkedList[1].value)
+      {
+        setScore(score + 1)
+      }
+}
+
+function quiz_2() {
+  if(answerRef.current != null)
+    if(parseInt(answerRef.current.value) === answerQuiz2)
+      {
+        setScore(score + 1)
+      }
+}
+
+function addRandomElementsInList(){
+  let newlist = [...linkedList]
+  if(newlist.length < 4)
+    while(newlist.length < Math.floor(Math.random() * 5) + 3){
+      if(newlist.length === 0){
+        newlist = [{id: 0, value: Math.floor(Math.random() * 100), next: -1}]
+      }
+      else{
+        const firstNode = newlist[0]
+        newlist = [{id: firstNode.id+1, value: Math.floor(Math.random() * 100), next: firstNode.id},...newlist]
+      }
+    }
+  setlinkedList(newlist)
+}
+
+const quizQuestions = ["What is the last element that gets popped out of the queue if we execute the following sequence:\
+  pop push(" + Math.floor(Math.random() * 100) + ") push("+ Math.floor(Math.random() * 100) + ") pop pop pop",
+  "What is the last element that gets popped out of the queue if we execute the following sequence:\
+  push(" + Math.floor(Math.random() * 100) + ") pop push("+ Math.floor(Math.random() * 100) + ") \
+  push("+ answerQuiz2 + ") push("+ Math.floor(Math.random() * 100) + ") pop pop"]
+
+React.useEffect(() => {
+  switch(currentQuestion) {
+    case 1:
+      quiz_1()
+      break;
+    case 2: 
+      quiz_2()
+      setQuizHide(true)
+      enableButtons()
+      break;
+  }
+},[currentQuestion])
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -311,7 +371,29 @@ function handleAddNode(){
                 <div className="error"> {errorMessage} </div>
               </Grid>
               <Grid item xs={12} md={4} lg={300}>
-                <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
+                 <div id="codeQuizWrapper">
+                 <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
+                 <div id="quiz">
+                 <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
+                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(()=>{                  
+                      setScore(0)
+                      setCurrentQuestion(0)
+                      setcodeLineList([])
+                      setQuizHide(false)
+                    })
+
+                    }}>Take quiz</Button>
+                 <div hidden={quizHide}>
+                   <div>Question {currentQuestion + 1}/2</div>
+                   <div id='currentQuizQuestion'>{quizQuestions[currentQuestion]}</div>
+                   <TextField type="number" inputRef={answerRef}></TextField>
+                   <Button id="answerButton" variant="contained" onClick={() => {
+                     setCurrentQuestion(currentQuestion + 1)
+                   }}>Answer</Button>
+                 </div>
+                 <div id='currentScore'>Your score is {score}/{currentQuestion}</div>
+                 </div>
+                 </div>
               </Grid>
             </Grid>
           </Container>
