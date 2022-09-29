@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom';
 import LinkedListIcon from './icons/LinkedListIcon'
 import QueueIcon from './icons/QueueIcon'
 import StackIcon from './icons/StackIcon'
+import BinaryTreeIcon from './icons/BinaryTreeIcon';
 
 export const mainListItems = (
   <React.Fragment>
@@ -33,6 +34,14 @@ export const mainListItems = (
         <StackIcon></StackIcon>
       </ListItemIcon>
       <ListItemText primary="Stack" />
+    </ListItemButton>
+    </Link>
+    <Link to='/tree' style={{ textDecoration: 'none' }}>
+    <ListItemButton>
+      <ListItemIcon>
+        <BinaryTreeIcon></BinaryTreeIcon>
+      </ListItemIcon>
+      <ListItemText primary="Tree" />
     </ListItemButton>
     </Link>
   </React.Fragment>

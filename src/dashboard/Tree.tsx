@@ -104,6 +104,7 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const [open, setOpen] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [finalMessage, setFinalMessage] = React.useState("");
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -214,7 +215,7 @@ function parseNodes(listIndex: number, value: number){
 
         abortController.abort()
         enableButtons()
-        setErrorMessage("Element " + value + " has been found in the list at index " + listIndex)
+        setFinalMessage("Element " + value + " has been found in the list at index " + listIndex)
       },{ signal: abortController.signal })
 
       return;
@@ -227,7 +228,7 @@ function parseNodes(listIndex: number, value: number){
   else{
     abortController.abort()
     enableButtons()
-    setErrorMessage("Element " + value + " has not been found in the list")
+    setFinalMessage("Element " + value + " has not been found in the list")
   }
 }
 
@@ -265,13 +266,14 @@ function parseNodesAndDelete(listIndex: number, value: number, deletedIndex: pas
   else{
     abortController.abort()
     deletedIndex.index = -1
-    setErrorMessage("Element " + value + " has not been found in the list")
+    setFinalMessage("Element " + value + " has not been found in the list")
   }
 }
 
 async function searchNode(value: number){
+    setFinalMessage("")
     disableButtons()
-    setErrorMessage("When searching for an element in a linked list, we parse the list until we find and element " +
+    setErrorMessage("When searching for an element in a linked list, we parse the list until we find the element " +
      "or until the next element is null which means the element doesnt exist in the list.")
     setcodeLineList([...showCodeSearch])
     await Promise.resolve(clearNodes())
@@ -279,6 +281,7 @@ async function searchNode(value: number){
 }
 
 async function deleteNode(value: number){
+  setFinalMessage("")
   setcodeLineList([...showCodeDelete])
   if(linkedList.length === 0)
   {
@@ -298,7 +301,7 @@ async function deleteNode(value: number){
       if(listIndex > -1){
         newlist = newlist.filter(item => item.id !== linkedList[listIndex].id)
         setlinkedList([...newlist])
-        setErrorMessage("Element " + value + " has been successfully deleted from the list")
+        setFinalMessage("Element " + value + " has been successfully deleted from the list")
       }
       clearNodes()
       enableButtons()
@@ -306,6 +309,7 @@ async function deleteNode(value: number){
 }
 
 function handleAddNode(){
+    setFinalMessage("")
     if(linkedList.length >= 10){
       setErrorMessage("The list can have max 10 elements")
     }
@@ -411,7 +415,7 @@ function addRandomElementsInList(){
 }
 
 const codeLinesQuiz = [{start: 7, end: 7, codeId: "code_add"}, {start : 5, end: 5, codeId: "code_search"}, {start : 16, end: 16, codeId: "code_delete"}]
-const quizQuestions = ["How many times will the highlighted code lines be executed?",
+const quizQuestions = ["How many times will the highlighted code lines be executed when adding an element to the end of the list?",
  "How many times will the highlighted code lines be executed when searching for the first element with value " + quizSearch + "", 
  "How many times will the highlighted code lines be executed when deleting the first element with value "+ quizDelete + ""]
 
@@ -471,7 +475,7 @@ React.useEffect(() => {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Linked List
+              Binary Tree
             </Typography>
           </Toolbar>
         </AppBar>
@@ -532,13 +536,14 @@ React.useEffect(() => {
                 </Stack>
                 <LinkedList linkedList = {linkedList} ></LinkedList>
                 <div className="error"> {errorMessage} </div>
+                <div className="final"> {finalMessage} </div>
               </Grid>
               <Grid item xs={12} md={4} lg={300}>
                  <div id="codeQuizWrapper">
                  <CodeSectionList lineCodeArray={codeLineList}></CodeSectionList>
                  <div id="quiz">
                  <Button variant="contained" disabled={disabledFlagQuiz} onClick={() => {
-                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(() => setErrorMessage("")).then(()=>{                  
+                     Promise.resolve(disableButtons()).then(addRandomElementsInList).then(() => {setErrorMessage(""); setFinalMessage("")}).then(()=>{                  
                       setScore(0)
                       setCurrentQuestion(0)
                       setcodeLineList([...showCodeAdd])
