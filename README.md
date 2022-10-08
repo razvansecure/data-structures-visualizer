@@ -1,3 +1,7 @@
+# Data structures visualizer
+
+React app for understanding how data structures work through animations and quizzes.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
